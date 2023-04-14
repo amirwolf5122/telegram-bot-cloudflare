@@ -18,6 +18,7 @@ Run Telegram messaging bot on Cloudflare Worker.
 12. Alright, it's done. Now you can use the messaging bot.
 
 ## Source: https://github.com/cvzi/telegram-bot-cloudflare
+## [@Amir](https://t.me/amir_wolf512)
 ## فارسی
 
 # ربات تلگرام در Cloudflare Workers
@@ -47,3 +48,5 @@ Run Telegram messaging bot on Cloudflare Worker.
 12.خب تموم شد الان میتونید ربات پیام رسان استفاده کنید
 
 ## منبع: https://github.com/cvzi/telegram-bot-cloudflare
+
+## [@Amir](https://t.me/amir_wolf512)
