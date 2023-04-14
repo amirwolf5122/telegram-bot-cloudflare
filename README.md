@@ -20,5 +20,4 @@ Telegram messaging bot running on a Cloudflare Worker.
 1.توکن از ربات
 [@BotFather](https://t.me/botfather) 
 بگیرید
-
-شییی
+2.
