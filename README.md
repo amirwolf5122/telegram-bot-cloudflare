@@ -1,7 +1,7 @@
 ## English
 # Telegram Bot on Cloudflare Workers
 
-Telegram messaging bot running on a Cloudflare Worker.
+Run Telegram messaging bot on Cloudflare Worker.
 
 ## Setup:
 1. Get your new bot token from [@BotFather](https://t.me/botfather): https://core.telegram.org/bots#6-botfather
@@ -15,7 +15,7 @@ Telegram messaging bot running on a Cloudflare Worker.
 9. Click on "Save and Deploy"
 10. In the middle panel append `/registerWebhook` to the url. For example: https://my-worker-123.username.workers.dev/registerWebhook
 11. Click "Send". In the right panel should appear `Ok`. If 401 Unauthorized appears, you may have used a wrong bot token.
-12. Well, it's finished, now you can use the messageing bot
+12. Alright, it's done. Now you can use the messaging bot.
 
 ## Source: https://github.com/cvzi/telegram-bot-cloudflare
 ## فارسی
