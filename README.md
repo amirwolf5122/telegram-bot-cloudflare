@@ -24,3 +24,6 @@ Telegram messaging bot running on a Cloudflare Worker.
 3.در داشبورد Cloudflare به "Workers" برید و روی "Create a Service" کلیک کنید
 
 4.یک نام دلخواه وارد کنید و روی "Create a Service" کلیک کنید
+
+5.روی "Quick Edit" کلیک کنید
+6.کد قسمت های لازم ویرایش کنید و کپی کنید [bot_fa.js](bot_fa.js) "Quick Edit" قرار بدید 
