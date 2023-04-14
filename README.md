@@ -3,7 +3,7 @@
 Telegram messaging bot running on a Cloudflare Worker.
 
 ## Setup:
-##En
+## En
 1. Get your new bot token from [@BotFather](https://t.me/botfather): https://core.telegram.org/bots#6-botfather
 2. Sign up to Cloudflare Workers: https://workers.cloudflare.com/
 3. In the Cloudflare Dashboard go to "Workers" and then click "Create a Service"
