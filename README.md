@@ -20,3 +20,6 @@ Telegram messaging bot running on a Cloudflare Worker.
 1.توکن از ربات [@BotFather](https://t.me/botfather) بسازید
 
 2.در سایت https://workers.cloudflare.com ثبت نام کنید
+
+
+3. در داشبورد Cloudflare به "Workers" بروید و سپس روی "Create a Service" کلیک کنید.
