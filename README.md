@@ -18,9 +18,6 @@ Telegram messaging bot running on a Cloudflare Worker.
 12. That's it, now you can send a text message to your Telegram bot
 ## Fa
 1.توکن از ربات [@BotFather](https://t.me/botfather) بسازید
-
 2.در سایت https://workers.cloudflare.com ثبت نام کنید
-
 3.در داشبورد Cloudflare به "Workers" برید و روی "Create a Service" کلیک کنید.
-
 4.یک نام دلخواه وارد کنید و روی "Create a Service" کلیک کنید
