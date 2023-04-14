@@ -40,6 +40,6 @@ Telegram messaging bot running on a Cloudflare Worker.
 
 9.به اخر دامنه`/registerWebhook` اضافه کنید برای مثال https://my-worker-123.username.workers.dev/registerWebhook  
 
-11. روی "Send" کلیک کنید. در پانل سمت راست باید "Ok" ظاهر بشه. اگر 401 Unauthorized ظاهر شد، ممکنه توکن وارد شده اشتباه باشه.
+11.روی "Send" کلیک کنید. در پانل سمت راست باید "Ok" ظاهر بشه. اگر 401 Unauthorized ظاهر شد، ممکنه توکن وارد شده اشتباه باشه.
 
 12.خب تموم شد الان میتونید ربات پیام رسان استفاده کنید
