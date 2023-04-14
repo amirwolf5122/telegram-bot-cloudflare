@@ -16,26 +16,3 @@ A minimal example of a Telegram Bot running on a Cloudflare Worker.
 10. In the middle panel append `/registerWebhook` to the url. For example: https://my-worker-123.username.workers.dev/registerWebhook
 11. Click "Send". In the right panel should appear `Ok`. If 401 Unauthorized appears, you may have used a wrong bot token.
 12. That's it, now you can send a text message to your Telegram bot
-
-## Bot behaviour
-
-The bot will send the original message back with `Echo:` prepended.
-If you want to change it, look at the function `onMessage()`. It receives a [Message](https://core.telegram.org/bots/api#message) object and sends a text back:
-
-```javascript
-/**
- * Handle incoming Message
- * https://core.telegram.org/bots/api#message
- */
-function onMessage (message) {
-  return sendPlainText(message.chat.id, 'Echo:\n' + message.text)
-}
-```
-
-The file [bot2.js](bot2.js) contains an improved bot, that demonstrates how to react to commands,
-send and receive [inline buttons](https://core.telegram.org/bots/api#inlinekeyboardbutton),
-and create [MarkdownV2](https://core.telegram.org/bots/api#markdownv2-style)-formatted text.
-
----
-
-[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
