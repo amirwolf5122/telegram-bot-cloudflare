@@ -1,9 +1,9 @@
+## En
 # Telegram Bot on Cloudflare Workers
 
 Telegram messaging bot running on a Cloudflare Worker.
 
 ## Setup:
-## En
 1. Get your new bot token from [@BotFather](https://t.me/botfather): https://core.telegram.org/bots#6-botfather
 2. Sign up to Cloudflare Workers: https://workers.cloudflare.com/
 3. In the Cloudflare Dashboard go to "Workers" and then click "Create a Service"
@@ -16,7 +16,14 @@ Telegram messaging bot running on a Cloudflare Worker.
 10. In the middle panel append `/registerWebhook` to the url. For example: https://my-worker-123.username.workers.dev/registerWebhook
 11. Click "Send". In the right panel should appear `Ok`. If 401 Unauthorized appears, you may have used a wrong bot token.
 12. That's it, now you can send a text message to your Telegram bot
-## Fa
+## فارسی
+
+# ربات تلگرام در Cloudflare Workers
+
+ربات پیام رسان تلگرام در Cloudflare Worker اجرا کنید.
+
+## اموزش نصب:
+
 1.توکن از ربات [@BotFather](https://t.me/botfather) بگیرید
 
 2.در سایت https://workers.cloudflare.com ثبت نام کنید
