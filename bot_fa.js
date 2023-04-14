@@ -2,7 +2,7 @@
  * https://github.com/amirwolf5122/telegram-bot-cloudflare
  */
 
-const TOKEN = '5934039029:AAEe1ANpUgH4xHA5Ulod-pp2mSvUlMOKQvo' // از ربات  @BotFather  بگیر
+const TOKEN = '59345149029:A4Ee1ANadgH4xHdaUlod-pp2mSvUlMOKQvo' // از ربات  @BotFather  بگیر
 const WEBHOOK = '/endpoint'
 const SECRET = 'QUEVEDO_BZRP_Music_Sessions_52' // A-Z, a-z, 0-9, _ and -
 const ADMIN = 5679710243 //ایدی عددی ادمین
