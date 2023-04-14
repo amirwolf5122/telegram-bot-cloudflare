@@ -3,8 +3,8 @@
  */
 
 const TOKEN = '59345149029:A4Ee1ANadgH4xHdaUlod-pp2mSvUlMOKQvo' // از ربات  @BotFather  بگیر
-const WEBHOOK = '/endpoint'
-const SECRET = 'QUEVEDO_BZRP_Music_Sessions_52' // A-Z, a-z, 0-9, _ and -
+const WEBHOOK = '/endpoint'//نیاز به ویرایش نیست
+const SECRET = 'QUEVEDO_BZRP_Music_Sessions_52' //نیاز به ویرایش نیست
 const ADMIN = 5679710243 //ایدی عددی ادمین
 addEventListener('fetch', event => {
   const url = new URL(event.request.url)
