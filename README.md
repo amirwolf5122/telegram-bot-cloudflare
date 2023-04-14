@@ -17,7 +17,7 @@ Telegram messaging bot running on a Cloudflare Worker.
 11. Click "Send". In the right panel should appear `Ok`. If 401 Unauthorized appears, you may have used a wrong bot token.
 12. That's it, now you can send a text message to your Telegram bot
 ## Fa
-1. Get your new bot token from [@BotFather](https://t.me/botfather): https://core.telegram.org/bots#6-botfather
+1.توکن از ربات [@BotFather](https://t.me/botfather) بگیرید
 2. Sign up to Cloudflare Workers: https://workers.cloudflare.com/
 3. In the Cloudflare Dashboard go to "Workers" and then click "Create a Service"
 4. Choose a name and click "Create a Service" to create the worker
