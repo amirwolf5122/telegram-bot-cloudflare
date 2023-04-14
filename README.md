@@ -36,9 +36,9 @@ Telegram messaging bot running on a Cloudflare Worker.
 
 6.حالا [bot_fa.js](bot_fa.js) قسمت های لازم ویرایش کنید و کپی کنید  "Quick Edit" قرار بدید
 
-7. روی "Save and Deploy" کلیک کنید
+7.روی "Save and Deploy" کلیک کنید
 
-9. به اخر دامنه`/registerWebhook` اضافه کنید برای مثال https://my-worker-123.username.workers.dev/registerWebhook  
+9.به اخر دامنه`/registerWebhook` اضافه کنید برای مثال https://my-worker-123.username.workers.dev/registerWebhook  
 
 11. روی "Send" کلیک کنید. در پانل سمت راست باید "Ok" ظاهر بشه. اگر 401 Unauthorized ظاهر شد، ممکنه توکن وارد شده اشتباه باشه.
 
