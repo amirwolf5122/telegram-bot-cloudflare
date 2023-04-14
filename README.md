@@ -16,6 +16,8 @@ Telegram messaging bot running on a Cloudflare Worker.
 10. In the middle panel append `/registerWebhook` to the url. For example: https://my-worker-123.username.workers.dev/registerWebhook
 11. Click "Send". In the right panel should appear `Ok`. If 401 Unauthorized appears, you may have used a wrong bot token.
 12. Well, it's finished, now you can use the messageing bot
+
+## Source:https://github.com/cvzi/telegram-bot-cloudflare
 ## فارسی
 
 # ربات تلگرام در Cloudflare Workers
