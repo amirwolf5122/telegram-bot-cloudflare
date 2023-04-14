@@ -11,11 +11,12 @@ Telegram messaging bot running on a Cloudflare Worker.
 5. Click on "Quick Edit" to change the source code of your new worker
 6. Copy and paste the code from [bot_en.js](bot_en.js) into the editor
 7. Replace the `TOKEN` variable in the code with your token from [@BotFather](https://t.me/botfather)
-8. Optional: Change the `WEBHOOK` variable to a different path and the `SECRET` variable to a random secret. See https://core.telegram.org/bots/api#setwebhook
-9. Click on "Save and Deploy"
-10. In the middle panel append `/registerWebhook` to the url. For example: https://my-worker-123.username.workers.dev/registerWebhook
-11. Click "Send". In the right panel should appear `Ok`. If 401 Unauthorized appears, you may have used a wrong bot token.
-12. That's it, now you can send a text message to your Telegram bot
+8. Replace the `ADMIN` variable in the code with your Chat id from [@chatIDrobot](https://t.me/chatIDrobot)
+9. Optional: Change the `WEBHOOK` variable to a different path and the `SECRET` variable to a random secret. See https://core.telegram.org/bots/api#setwebhook
+10. Click on "Save and Deploy"
+11. In the middle panel append `/registerWebhook` to the url. For example: https://my-worker-123.username.workers.dev/registerWebhook
+12. Click "Send". In the right panel should appear `Ok`. If 401 Unauthorized appears, you may have used a wrong bot token.
+13. That's it, now you can send a text message to your Telegram bot
 ## فارسی
 
 # ربات تلگرام در Cloudflare Workers
