@@ -1,6 +1,6 @@
 # Telegram Bot on Cloudflare Workers
 
-A minimal example of a Telegram Bot running on a Cloudflare Worker.
+A minimal example of a Telegram messaging bot running on a Cloudflare Worker.
 
 ## Setup:
 
