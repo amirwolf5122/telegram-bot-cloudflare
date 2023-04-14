@@ -21,5 +21,6 @@ Telegram messaging bot running on a Cloudflare Worker.
 
 2.در سایت https://workers.cloudflare.com ثبت نام کنید
 
+3.در داشبورد Cloudflare به "Workers" برید و روی "Create a Service" کلیک کنید.
 
-3. در داشبورد Cloudflare به "Workers" بروید و سپس روی "Create a Service" کلیک کنید.
+4.یک نام دلخواه وارد کنید و روی "Create a Service" کلیک کنید
