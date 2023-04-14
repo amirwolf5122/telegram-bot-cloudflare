@@ -19,4 +19,4 @@ Telegram messaging bot running on a Cloudflare Worker.
 ## Fa
 1.توکن از ربات [@BotFather](https://t.me/botfather) بسازید
 
-2. در سایت https://workers.cloudflare.com/ ثبت نام کنید
+2.در سایت https://workers.cloudflare.com ثبت نام کنید
