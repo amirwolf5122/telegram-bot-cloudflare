@@ -27,4 +27,4 @@ Telegram messaging bot running on a Cloudflare Worker.
 
 5.روی "Quick Edit" کلیک کنید
 
-6.و [bot_fa.js](bot_fa.js) قسمت های لازم ویرایش کنید کپی کنید  "Quick Edit" قرار بدید 
+6.حالا [bot_fa.js](bot_fa.js) قسمت های لازم ویرایش کنید و کپی کنید  "Quick Edit" قرار بدید 
