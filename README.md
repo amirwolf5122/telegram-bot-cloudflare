@@ -9,7 +9,7 @@ Telegram messaging bot running on a Cloudflare Worker.
 3. In the Cloudflare Dashboard go to "Workers" and then click "Create a Service"
 4. Choose a name and click "Create a Service" to create the worker
 5. Click on "Quick Edit" to change the source code of your new worker
-6. Copy and paste the code from [bot.js](bot.js) into the editor
+6. Copy and paste the code from [bot_en.js](bot_en.js) into the editor
 7. Replace the `TOKEN` variable in the code with your token from [@BotFather](https://t.me/botfather)
 8. Optional: Change the `WEBHOOK` variable to a different path and the `SECRET` variable to a random secret. See https://core.telegram.org/bots/api#setwebhook
 9. Click on "Save and Deploy"
