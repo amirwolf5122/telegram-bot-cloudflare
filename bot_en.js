@@ -3,8 +3,8 @@
  */
 
 const TOKEN = '5734039029:AAEedvweUgHvsHaw5Ulod-pp2mfvUlMOKQvo' // Get it from @BotFather https://core.telegram.org/bots#6-botfather
-const WEBHOOK = '/endpoint'
-const SECRET = 'QUEVEDO_BZRP_Music_Sessions_52' // A-Z, a-z, 0-9, _ and -
+const WEBHOOK = '/endpoint'//No need for editing.
+const SECRET = 'QUEVEDO_BZRP_Music_Sessions_52' // No need for editing.
 const ADMIN = 5679710243 //// Get it from @chatIDrobot
 /**
  * Wait for requests to the worker
