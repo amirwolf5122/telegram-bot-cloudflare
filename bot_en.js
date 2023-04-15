@@ -22,7 +22,7 @@ addEventListener('fetch', event => {
   }
 })
 
-/*
+/**
  * Handle requests to WEBHOOK
  * https://core.telegram.org/bots/api#update
  */
