@@ -2,10 +2,10 @@
  * https://github.com/amirwolf5122/telegram-bot-cloudflare
  */
 
-const TOKEN = '59345149029:A4Ee1ANadgH4xHdaUlod-pp2mSvUlMOKQvo' // از ربات  @BotFather  بگیر
+const TOKEN = '6227246295:AAHdihVJ1HZTw1a1DNUscxyoEgstFe_aLYE' // از ربات  @BotFather  بگیر
 const WEBHOOK = '/endpoint'//نیاز به ویرایش نیست
 const SECRET = 'QUEVEDO_BZRP_Music_Sessions_52' //نیاز به ویرایش نیست
-const ADMIN = 5679710243 //ایدی عددی ادمین
+const ADMIN = 5484670263 //ایدی عددی ادمین
 addEventListener('fetch', event => {
   const url = new URL(event.request.url)
   if (url.pathname === WEBHOOK) {
@@ -51,7 +51,7 @@ async function onMessage (message) {
     if (message.text == "/start") {
         return (await fetch(apiUrl('sendMessage', {
           chat_id: message.chat.id,
-          text: "پیام خودتون ارسال کنید تا به سازندم برسونم:)",
+          text: "مرسی از SOYOSHA که منو طراحی کرد:)       هر سوالی داری بپرس تا به صورت ناشناس به دستش برسونم",
           reply_to_message_id: message.message_id
         }))).json()
     }else{
