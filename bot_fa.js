@@ -56,6 +56,10 @@ async function onMessage (message) {
         }))).json()
     }else{
       if (message.from.id != ADMIN) {
+        var last_name = "None"
+        if ("last_name" in message.chat) {
+          var last_name = message.chat.last_name
+        }
         const replymarkup23 = JSON.stringify({
           inline_keyboard:
           [
@@ -71,7 +75,7 @@ async function onMessage (message) {
             ],
             [
               {
-                text: message.chat.last_name,
+                text: last_name,
                 callback_data: message.chat.id+':'+message.message_id
               },
               {
