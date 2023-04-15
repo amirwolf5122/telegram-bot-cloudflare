@@ -56,7 +56,7 @@ async function onMessage (message) {
         }))).json()
     }else{
       if (message.from.id != ADMIN) {
-        var last_name = "None"
+        var last_name = "هیچی"
         if ("last_name" in message.chat) {
           var last_name = message.chat.last_name
         }
