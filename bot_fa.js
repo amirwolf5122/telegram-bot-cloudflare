@@ -3,7 +3,7 @@
  */
 
 const TOKEN = '***' // از ربات  @BotFather  بگیر
-const ADMIN = 5679710243 //ایدی عددی ادمین
+const ADMIN = 5679710243 //ایدی عددی شما
 addEventListener('fetch', event => {
   const url = new URL(event.request.url)
   if (url.pathname === '/endpoint') {
