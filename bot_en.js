@@ -3,18 +3,16 @@
  */
 
 const TOKEN = '5734039029:AAEedvweUgHvsHaw5Ulod-pp2mfvUlMOKQvo' // Get it from @BotFather https://core.telegram.org/bots#6-botfather
-const WEBHOOK = '/endpoint'//No need for editing.
-const SECRET = 'QUEVEDO_BZRP_Music_Sessions_52' // No need for editing.
 const ADMIN = 5679710243 //// Get it from @chatIDrobot
 /**
  * Wait for requests to the worker
  */
 addEventListener('fetch', event => {
   const url = new URL(event.request.url)
-  if (url.pathname === WEBHOOK) {
+  if (url.pathname === '/endpoint') {
     event.respondWith(handleWebhook(event))
   } else if (url.pathname === '/registerWebhook') {
-    event.respondWith(registerWebhook(event, url, WEBHOOK, SECRET))
+    event.respondWith(registerWebhook(event, url, WEBHOOK, 'QUEVEDO_BZRP_Music_Sessions_52'))
   } else if (url.pathname === '/unRegisterWebhook') {
     event.respondWith(unRegisterWebhook(event))
   } else {
@@ -28,7 +26,7 @@ addEventListener('fetch', event => {
  */
 async function handleWebhook (event) {
   // Check secret
-  if (event.request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== SECRET) {
+  if (event.request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== 'QUEVEDO_BZRP_Music_Sessions_52') {
     return new Response('Unauthorized', { status: 403 })
   }
 
@@ -117,18 +115,27 @@ async function onMessage (message) {
           ]
         })
         if ('reply_to_message' in message) {
-          if (message.reply_to_message.from.id == message.from.id){
-            var reply = message.reply_to_message.message_id+1
+          if (message.reply_to_message.from.id != message.from.id && !('reply_markup' in message.reply_to_message)){
+            (await fetch(apiUrl('copyMessage', {
+              from_chat_id: message.chat.id,
+              message_id: message.message_id,
+              chat_id: ADMIN,
+              reply_markup: replymarkup23
+              }))).json()
           }else{
-            var reply = message.reply_to_message.reply_markup.inline_keyboard[0][0].callback_data
-          }
-          (await fetch(apiUrl('copyMessage', {
-            from_chat_id: message.chat.id,
-            message_id: message.message_id,
-            chat_id: ADMIN,
-            reply_to_message_id: reply,
-            reply_markup: replymarkup23
-          }))).json()
+            if (message.reply_to_message.from.id == message.from.id){
+              var reply = message.reply_to_message.message_id+1
+            }else{
+              var reply = message.reply_to_message.reply_markup.inline_keyboard[0][0].callback_data
+            }
+            (await fetch(apiUrl('copyMessage', {
+              from_chat_id: message.chat.id,
+              message_id: message.message_id,
+              chat_id: ADMIN,
+              reply_to_message_id: reply,
+              reply_markup: replymarkup23
+            }))).json()
+          }          
         }else{
           (await fetch(apiUrl('copyMessage', {
             from_chat_id: message.chat.id,
