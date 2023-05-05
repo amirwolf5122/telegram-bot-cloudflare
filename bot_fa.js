@@ -8,7 +8,7 @@ addEventListener('fetch', event => {
   if (url.pathname === '/endpoint') {
     event.respondWith(handleWebhook(event))
   } else if (url.pathname === '/registerWebhook') {
-    event.respondWith(registerWebhook(event, url, WEBHOOK, 'QUEVEDO_BZRP_Music_Sessions_52'))
+    event.respondWith(registerWebhook(event, url, '/endpoint', 'QUEVEDO_BZRP_Music_Sessions_52'))
   } else if (url.pathname === '/unRegisterWebhook') {
     event.respondWith(unRegisterWebhook(event))
   } else {
