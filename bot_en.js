@@ -1,18 +1,14 @@
 /**
- * https://github.com/cvzi/telegram-bot-cloudflare
- */
-
-const TOKEN = '5734039029:AAEedvweUgHvsHaw5Ulod-pp2mfvUlMOKQvo' // Get it from @BotFather https://core.telegram.org/bots#6-botfather
-const ADMIN = 5679710243 //// Get it from @chatIDrobot
-/**
- * Wait for requests to the worker
- */
+ * https://github.com/amirwolf5122/telegram-bot-cloudflare
+*/
+const TOKEN = '***'// Get it from @BotFather https://core.telegram.org/bots#6-botfather
+const ADMIN = 5831914878 //// Get it from @chatIDrobot
 addEventListener('fetch', event => {
   const url = new URL(event.request.url)
   if (url.pathname === '/endpoint') {
-    event.respondWith(handleWebhook(event))
+    event.respondWith(handleWebhook(event,database))
   } else if (url.pathname === '/registerWebhook') {
-    event.respondWith(registerWebhook(event, url, '/endpoint', 'QUEVEDO_BZRP_Music_Sessions_52'))
+    event.respondWith(registerWebhook(event, url, '/endpoint', 'QUEVEDO_BZRP_Music_Sessions_522'))
   } else if (url.pathname === '/unRegisterWebhook') {
     event.respondWith(unRegisterWebhook(event))
   } else {
@@ -20,178 +16,302 @@ addEventListener('fetch', event => {
   }
 })
 
-/**
- * Handle requests to WEBHOOK
- * https://core.telegram.org/bots/api#update
- */
-async function handleWebhook (event) {
-  // Check secret
-  if (event.request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== 'QUEVEDO_BZRP_Music_Sessions_52') {
+
+async function handleWebhook (event,db) {
+  if (event.request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== 'QUEVEDO_BZRP_Music_Sessions_522') {
     return new Response('Unauthorized', { status: 403 })
   }
 
-  // Read request body synchronously
   const update = await event.request.json()
-  // Deal with response asynchronously
-  event.waitUntil(onUpdate(update))
+  event.waitUntil(onUpdate(update,db))
 
   return new Response('Ok')
 }
 
-/**
- * Handle incoming Update
- * https://core.telegram.org/bots/api#update
- */
-async function onUpdate (update) {
+async function onUpdate (update,db) {
   if ('callback_query' in update) {
-    await onCallbackQuery(update.callback_query)
+    await onCallbackQuery(update.callback_query,db)
   }
   if ('message' in update) {
-    await onMessage(update.message)
+    await onMessage(update.message,db)
   }
-  //return fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ADMIN}&text=${JSON.stringify(update, null, 2)}`);
+  return new Response('Ok')
+  //const myConfigs = (await db.get("ban"))?.split("\n") || []; 
+  //return fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ADMIN}&text=hi4${JSON.stringify(myConfigs, null, 2)}`);
 }
 
-
-async function onCallbackQuery (callback) {
-  return (await fetch(apiUrl('answerCallbackQuery', {
-    callback_query_id: callback.id,
-    text:"@amir_wolf512",
-  }))).json()
+async function onCallbackQuery (callback,db) {
+  if (callback.data == "ban"){
+    const ban = (await db.get("ban"))?.trim().split("\n") || [];
+    const user_id = callback.message.reply_markup.inline_keyboard[0][0].callback_data.split(":")[0].toString()
+    if (!(ban.includes(user_id))) {
+      ban.push(user_id);
+      await db.put("ban",ban.join("\n"));
+      (await fetch(apiUrl('sendMessage', {
+        chat_id: parseInt(user_id),
+        text: "BAN!"
+      }))).json()
+    }
+    (await fetch(apiUrl('sendMessage', {
+      chat_id: callback.message.chat.id,
+      text: "BAN!",
+      reply_to_message_id: callback.message.message_id
+    }))).json()
+    (await fetch(apiUrl('deleteMessage', {
+      chat_id: callback.message.chat.id,
+      message_id: callback.message.message_id
+    }))).json()
+  }else{
+    (await fetch(apiUrl('answerCallbackQuery', {
+      callback_query_id: callback.id,
+      text:"@amir_wolf512",
+    }))).json()
+  }
+  return new Response('Ok')
 }
-async function onMessage (message) {
+async function onMessage (message,db) {
+  const text = message.text || ""
   if (message.chat.type == "private") {
-    if (message.text == "/start") {
-        return (await fetch(apiUrl('sendMessage', {
-          chat_id: message.chat.id,
-          text: "Please send your message so that I can deliver it to the creator:)",
-          reply_to_message_id: message.message_id
-        }))).json()
-    }else{
-      if (message.from.id != ADMIN) {
-        var last_name = "None"
-        if ("last_name" in message.chat) {
-          var last_name = message.chat.last_name
+    const ban = ((await db.get("ban"))?.trim().split("\n")) || [];
+    if ( message.from.id == ADMIN || !(ban.includes(message.from.id.toString()))) {
+      if (message.from.id == ADMIN) {
+        if (text.split(" ").length ==2 && text.split(" ")[0] == "ban" && !isNaN(text.split(" ")[1]/0)) {
+          const user_id = text.split(" ")[1]
+          if (!(ban.includes(user_id))) {
+            ban.push(user_id);
+            await db.put("ban",ban.join("\n"));
+            (await fetch(apiUrl('sendMessage', {
+              chat_id: parseInt(user_id),
+              text: "BAN!"
+            }))).json()
+          }
+          (await fetch(apiUrl('sendMessage', {
+            chat_id: message.chat.id,
+            text: "BAN!",
+            reply_to_message_id: message.message_id
+          }))).json()
         }
-        const replymarkup23 = JSON.stringify({
-          inline_keyboard:
-          [
-            [
-              {
-                text: "Name",
-                callback_data: message.chat.id+':'+message.message_id
-              },
-              {
-                text: message.chat.first_name,
-                callback_data: message.chat.id+':'+message.message_id
-              }
-            ],
-            [
-              {
-                text: "last name",
-                callback_data: message.chat.id+':'+message.message_id
-              },
-              {
-                text: last_name,
-                callback_data: message.chat.id+':'+message.message_id
-              }
-            ],
-            [
-              {
-                text: "id",
-                callback_data: message.chat.id+':'+message.message_id
-              },
-              {
-                text: message.chat.id,
-                callback_data: message.chat.id+':'+message.message_id
-              }
-            ],
-            [
-              {
-                text: "Go to private message",
-                url: 'tg://openmessage?user_id='+message.chat.id
-              }
-            ]
-          ]
-        })
-        if ('reply_to_message' in message) {
-          if (message.reply_to_message.from.id != message.from.id && !('reply_markup' in message.reply_to_message)){
-            (await fetch(apiUrl('copyMessage', {
-              from_chat_id: message.chat.id,
-              message_id: message.message_id,
-              chat_id: ADMIN,
-              reply_markup: replymarkup23
-              }))).json()
-          }else{
-            if (message.reply_to_message.from.id == message.from.id){
-              var reply = message.reply_to_message.message_id+1
+        else if (text.split(" ").length ==2 && text.split(" ")[0] == "unban" && !isNaN(text.split(" ")[1]/0)) {
+          const user_id = text.split(" ")[1]
+          if ((ban.includes(user_id))) {
+            const ban2 = ban.filter(elem => elem !== user_id);
+            if (JSON.stringify(ban2, null, 2) != "[]"){
+              await db.put("ban",ban2.join("\n"));
             }else{
-              var reply = message.reply_to_message.reply_markup.inline_keyboard[0][0].callback_data
+              await db.delete("ban");
             }
-            (await fetch(apiUrl('copyMessage', {
-              from_chat_id: message.chat.id,
-              message_id: message.message_id,
-              chat_id: ADMIN,
-              reply_to_message_id: reply,
-              reply_markup: replymarkup23
+            (await fetch(apiUrl('sendMessage', {
+              chat_id: parseInt(user_id),
+              text: "UNban!"
             }))).json()
-          }          
-        }else{
-          (await fetch(apiUrl('copyMessage', {
-            from_chat_id: message.chat.id,
-            message_id: message.message_id,
-            chat_id: ADMIN,
-            reply_markup: replymarkup23
+            (await fetch(apiUrl('sendMessage', {
+              chat_id: message.chat.id,
+              text: "UNban!",
+              reply_to_message_id: message.message_id
             }))).json()
+          }else{
+            (await fetch(apiUrl('sendMessage', {
+              chat_id: message.chat.id,
+              text: "ID not found",
+              reply_to_message_id: message.message_id
+            }))).json()
+          }
         }
-        return (await fetch(apiUrl('sendMessage', {
-          chat_id: message.chat.id,
-          text: "Sent!",
-          reply_to_message_id: message.message_id
-        }))).json()
+        else if (text == "banlist") {
+          if (JSON.stringify(ban, null, 2) != "[]"){
+            (await fetch(apiUrl('sendMessage', {
+              chat_id: message.chat.id,
+              text: "Banned list:\n〰️\n<code>"+ban.join("</code>\n〰️\n<code>")+'</code>',
+              parse_mode: "HTML",
+              reply_to_message_id: message.message_id
+            }))).json()
+          }else{
+            (await fetch(apiUrl('sendMessage', {
+              chat_id: message.chat.id,
+              text: "The list is empty",
+              reply_to_message_id: message.message_id
+            }))).json()
+          }
+        }
+        else if (text == "cleanbanall") {
+          if (JSON.stringify(ban, null, 2) != "[]"){
+            await db.delete("ban");
+            (await fetch(apiUrl('sendMessage', {
+              chat_id: message.chat.id,
+              text: "The list is empty",
+              reply_to_message_id: message.message_id
+            }))).json()
+          }else{
+            (await fetch(apiUrl('sendMessage', {
+              chat_id: message.chat.id,
+              text: "The list is empty",
+              reply_to_message_id: message.message_id
+            }))).json()
+          }
+        }
+      }
+      if (text == "/start") {
+        if (message.from.id == ADMIN) {
+          (await fetch(apiUrl('sendMessage', {
+            chat_id: message.chat.id,
+            text: `
+hello welcome
+
+
+List of commands
+➿〰️〰️〰️〰️〰️〰️〰️➿
+▶️ <code>ban</code> [chatid]
+➿〰️〰️〰️〰️〰️〰️〰️➿
+▶️ <code>unban</code> [chatid]
+➿〰️〰️〰️〰️〰️〰️〰️➿
+▶️ <code>banlist</code>
+➿〰️〰️〰️〰️〰️〰️〰️➿
+▶️ <code>cleanbanall</code>
+➿〰️〰️〰️〰️〰️〰️〰️➿
+〰️〰️@amir_wolf512〰️〰️
+➿〰️〰️〰️〰️〰️〰️〰️➿`,
+            reply_to_message_id: message.message_id,
+            parse_mode: "HTML",
+          }))).json()
+        }else{
+          (await fetch(apiUrl('sendMessage', {
+            chat_id: message.chat.id,
+            text: "Send your message so I can deliver it to my owner :)",
+            reply_to_message_id: message.message_id
+          }))).json()
+        }
       }else{
-        if(message.reply_to_message.from.id !=message.from.id){
-          const id23 = message.reply_to_message.reply_markup.inline_keyboard[0][0].callback_data.split(":")
-          const id223 = (await fetch(apiUrl('copyMessage', {
-            from_chat_id: message.chat.id,
-            message_id: message.message_id,
-            chat_id: id23[0],
-            reply_to_message_id:id23[1],
-            reply_markup: JSON.stringify({
+        if (message.from.id != ADMIN) {
+          const replymarkup23 = JSON.stringify({
             inline_keyboard:
             [
               [
                 {
-                  text: message.reply_to_message.from.first_name,
-                  callback_data: message.message_id
+                  text: "Name:",
+                  callback_data: message.chat.id+':'+message.message_id
+                },
+                {
+                  text: message.chat.first_name,
+                  callback_data: message.chat.id+':'+message.message_id
+                }
+              ],
+              [
+                {
+                  text: "Last name",
+                  callback_data: message.chat.id+':'+message.message_id
+                },
+                {
+                  text: ((message.chat.last_name) || "None"),
+                  callback_data: message.chat.id+':'+message.message_id
+                }
+              ],
+              [
+                {
+                  text: "id",
+                  callback_data: message.chat.id+':'+message.message_id
+                },
+                {
+                  text: message.chat.id,
+                  callback_data: message.chat.id+':'+message.message_id
+                }
+              ],
+              [
+                {
+                  text: "Ban the user",
+                  callback_data: "ban"
+                }
+              ],
+              [
+                {
+                  text: "Go to private message",
+                  url: ((message.chat.username && 't.me/'+message.chat.username) || 'tg://openmessage?user_id='+message.chat.id)
                 }
               ]
             ]
-            })
-          })))
-          const response23 = await id223.json();
-          if(response23.description == "Forbidden: bot was blocked by the user"){
-            return (await fetch(apiUrl('sendMessage', {
-              chat_id: message.chat.id,
-              text: "Failed to send The bot has been blocked by the user",
-              reply_to_message_id: message.message_id
+          })
+          if ('reply_to_message' in message) {
+            if (message.reply_to_message.from.id != message.from.id && !('reply_markup' in message.reply_to_message)){
+              (await fetch(apiUrl('copyMessage', {
+                from_chat_id: message.chat.id,
+                message_id: message.message_id,
+                chat_id: ADMIN,
+                reply_markup: replymarkup23
+                }))).json()
+            }else{
+              if (message.reply_to_message.from.id == message.from.id){
+                var reply = message.reply_to_message.message_id+1
+              }else{
+                var reply = message.reply_to_message.reply_markup.inline_keyboard[0][0].callback_data
+              }
+              (await fetch(apiUrl('copyMessage', {
+                from_chat_id: message.chat.id,
+                message_id: message.message_id,
+                chat_id: ADMIN,
+                reply_to_message_id: reply,
+                reply_markup: replymarkup23
+              }))).json()
+            }          
+          }else{
+            (await fetch(apiUrl('copyMessage', {
+              from_chat_id: message.chat.id,
+              message_id: message.message_id,
+              chat_id: ADMIN,
+              reply_markup: replymarkup23
               }))).json()
           }
-        return (await fetch(apiUrl('sendMessage', {
-          chat_id: message.chat.id,
-          text: "Sent!",
-          reply_to_message_id: message.message_id
-        }))).json()
+          (await fetch(apiUrl('sendMessage', {
+            chat_id: message.chat.id,
+            text: "Sent!",
+            reply_to_message_id: message.message_id
+          }))).json()
+        }else{
+          if(message.reply_to_message.from.id !=message.from.id){
+            const id23 = message.reply_to_message.reply_markup.inline_keyboard[0][0].callback_data.split(":")
+            const id223 = (await fetch(apiUrl('copyMessage', {
+              from_chat_id: message.chat.id,
+              message_id: message.message_id,
+              chat_id: id23[0],
+              reply_to_message_id:id23[1],
+              reply_markup: JSON.stringify({
+              inline_keyboard:
+              [
+                [
+                  {
+                    text: message.reply_to_message.from.first_name,
+                    callback_data: message.message_id
+                  }
+                ]
+              ]
+              })
+            })))
+            const response23 = await id223.json();
+            if(response23.description == "Forbidden: bot was blocked by the user"){
+              (await fetch(apiUrl('sendMessage', {
+                chat_id: message.chat.id,
+                text: "Failed to send The bot has been blocked by the user",
+                reply_to_message_id: message.message_id
+                }))).json()
+            }else{
+              (await fetch(apiUrl('sendMessage', {
+              chat_id: message.chat.id,
+              text: "Sent!",
+              reply_to_message_id: message.message_id
+              }))).json()
+            }
+          }
         }
       }
+    }else{
+      (await fetch(apiUrl('sendMessage', {
+        chat_id: message.chat.id,
+        text: "BAN!:(",
+        reply_to_message_id: message.message_id
+      }))).json()
     }
   }
+  return new Response('Ok')
 }
 
-/**
- * Set webhook to this worker's url
- * https://core.telegram.org/bots/api#setwebhook
- */
 async function registerWebhook (event, requestUrl, suffix, secret) {
   // https://core.telegram.org/bots/api#setwebhook
   const webhookUrl = `${requestUrl.protocol}//${requestUrl.hostname}${suffix}`
@@ -199,18 +319,11 @@ async function registerWebhook (event, requestUrl, suffix, secret) {
   return new Response('ok' in r && r.ok ? 'Ok' : JSON.stringify(r, null, 2))
 }
 
-/**
- * Remove webhook
- * https://core.telegram.org/bots/api#setwebhook
- */
 async function unRegisterWebhook (event) {
   const r = await (await fetch(apiUrl('setWebhook', { url: '' }))).json()
   return new Response('ok' in r && r.ok ? 'Ok' : JSON.stringify(r, null, 2))
 }
 
-/**
- * Return url to telegram api, optionally with parameters added
- */
 function apiUrl (methodName, params = null) {
   let query = ''
   if (params) {
