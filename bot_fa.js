@@ -29,9 +29,6 @@ async function handleWebhook (event,db) {
 }
 
 async function onUpdate (update,db) {
-  if ('business_message' in update) {
-    await onMessagenew(update.business_message,db)
-  }
   if ('callback_query' in update) {
     await onCallbackQuery(update.callback_query,db)
   }
@@ -42,28 +39,6 @@ async function onUpdate (update,db) {
   //const myConfigs = (await db.get("ban"))?.split("\n") || []; 
   //return fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ADMIN}&text=hi4${JSON.stringify(myConfigs, null, 2)}`);
 }
-async function onMessagenew (message,db) {
-  if (message.text =="hi"){
-  (await fetch(apiUrl('sendMessage', {
-    business_connection_id: message.business_connection_id,
-    chat_id: message.chat.id,
-    text: "test",
-    reply_markup: JSON.stringify({
-      inline_keyboard:
-      [
-        [
-          {
-            text: message.from.first_name,
-            callback_data: message.message_id
-          }
-        ]
-      ]
-      })
-    })))
-}
-  return new Response('Ok')
-  //return fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ADMIN}&text=hi4${JSON.stringify(message, null, 2)}`);
-} 
 async function onCallbackQuery (callback,db) {
   if (callback.data == "ban"){
     const ban = (await db.get("ban"))?.trim().split("\n") || [];
