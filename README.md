@@ -3,7 +3,6 @@
 
 Run Telegram messaging bot on Cloudflare Worker.
 
-## Setup:
 ## Source: https://github.com/cvzi/telegram-bot-cloudflare
 ## [Amir_Wolf512](https://t.me/amir_wolf512)
 ## فارسی
