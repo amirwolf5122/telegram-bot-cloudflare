@@ -32,128 +32,188 @@ async function onUpdate (update,db) {
   if ('callback_query' in update) {
     await onCallbackQuery(update.callback_query,db)
   }
-  if ('message' in update) {
-    await onMessage(update.message,db)
+  else if ('message' in update) {
+    const parts = update.message.text.split(" ");
+    if (update.message.chat.type == "private") {
+      if (update.message.text && update.message.text == "/start"){
+        await onstart(update.message,db)
+      }
+      else if (parts.length === 2 && ["ban", "unban"].includes(parts[0]) && !isNaN(parts[1]) || update.message.text && ( update.message.text == "banlist" || update.message.text == "cleanbanall")){
+        await onadmin(update.message,db)
+      }else{
+        await onMessage(update.message,db)
+      }
+    }
+  }
+  else if ('edited_message' in update) {
+    if (update.edited_message.chat.type == "private") {
+      await onMessageedit(update.edited_message,db)
+    }
   }
   return new Response('Ok')
   //const myConfigs = (await db.get("ban"))?.split("\n") || []; 
-  //return fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ADMIN}&text=hi4${JSON.stringify(myConfigs, null, 2)}`);
+  //return fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ADMIN}&text=hi4${JSON.stringify(update, null, 2)}`);
 }
-async function onCallbackQuery (callback,db) {
-  if (callback.data == "ban"){
-    const ban = (await db.get("ban"))?.trim().split("\n") || [];
-    const user_id = callback.message.reply_markup.inline_keyboard[0][0].callback_data.split(":")[0].toString()
-    if (!(ban.includes(user_id))) {
-      ban.push(user_id);
-      await db.put("ban",ban.join("\n"));
-      (await fetch(apiUrl('sendMessage', {
-        chat_id: parseInt(user_id),
-        text: "شما بن شدید"
-      }))).json()
+async function onMessageedit (message,db) {
+  const ban = ((await db.get("ban"))?.trim().split("\n")) || [];
+  let timestamp = message.edit_date;
+  let date = new Date(timestamp * 1000);
+  let hours = String(date.getUTCHours()).padStart(2, '0');
+  let minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  let seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  if ( message.from.id == ADMIN || !(ban.includes(message.from.id.toString()))) {
+    const replymarkup24 = JSON.stringify({
+      inline_keyboard:
+      [
+        [
+          {
+            text: `ویرایش شد:${hours}:${minutes}:${seconds}`,
+            callback_data: message.chat.id+':'+message.message_id
+          }
+        ],
+        [
+          {
+            text: message.chat.first_name,
+            callback_data: message.chat.id+':'+message.message_id
+          },
+          {
+            text: "اسم طرف",
+            callback_data: message.chat.id+':'+message.message_id
+          }
+        ],
+        [
+          {
+            text: ((message.chat.last_name) || "هیچی"),
+            callback_data: message.chat.id+':'+message.message_id
+          },
+          {
+            text: "فامیل طرف",
+            callback_data: message.chat.id+':'+message.message_id
+          }
+        ],
+        [
+          {
+            text: message.chat.id,
+            callback_data: message.chat.id+':'+message.message_id
+          },
+          {
+            text: "ایدی عددی طرف",
+            callback_data: message.chat.id+':'+message.message_id
+          }
+        ],
+        [
+          {
+            text: "بن کردن کاربر",
+            callback_data: "ban"
+          }
+        ],
+        [
+          {
+            text: "رفتن به پیوی",
+            url: ((message.chat.username && 't.me/'+message.chat.username) || 'tg://openmessage?user_id='+message.chat.id)
+          }
+        ]
+      ]
+      })
+    const replymarkup25 = JSON.stringify({
+        inline_keyboard:
+        [
+          [
+            {
+              text: `ویرایش شد:${hours}:${minutes}:${seconds}`,
+              callback_data: message.message_id
+            }
+          ]
+        ]
+        })
+    const filedata=null
+    if (message.photo){
+      const filedata= JSON.stringify({
+        'type': 'photo',
+        'media': message.photo.file_id
+    })
+    }else if (message.video){
+      const filedata= JSON.stringify({
+        'type': 'video',
+        'media': message.video.file_id
+    })
+    }else if (message.document){
+      const filedata= JSON.stringify({
+        'type': 'document',
+        'media': message.document.file_id
+    })
+    }else if (message.audio){
+      const filedata= JSON.stringify({
+        'type': 'audio',
+        'media': message.audio.file_id
+    })
+    }else if (message.sticker){
+      const filedata= JSON.stringify({
+        'type': 'sticker',
+        'media': message.sticker.file_id
+    })
+    }else if (message.voice){
+      const filedata= JSON.stringify({
+        'type': 'voice',
+        'media': message.voice.file_id
+    })
     }
-    (await fetch(apiUrl('sendMessage', {
-      chat_id: callback.message.chat.id,
-      text: "بن شد",
-      reply_to_message_id: callback.message.message_id
-    }))).json()
-    (await fetch(apiUrl('deleteMessage', {
-      chat_id: callback.message.chat.id,
-      message_id: callback.message.message_id
-    }))).json()
-  }else{
-    (await fetch(apiUrl('answerCallbackQuery', {
-      callback_query_id: callback.id,
-      text:"@amir_wolf512",
-    }))).json()
+    if (message.from.id != ADMIN) {
+        if (filedata) {
+          (await fetch(apiUrl('editMessageMedia', {
+            chat_id: ADMIN,
+            message_id: message.message_id+1,
+            media: filedata,
+            reply_markup: replymarkup24
+          }))).json();
+          (await fetch(apiUrl('editMessageCaption', {
+            chat_id: ADMIN,
+            message_id: message.message_id+1,
+            caption: message.caption || "",
+            reply_markup: replymarkup24
+          }))).json()
+        }else{
+          (await fetch(apiUrl('editMessageText', {
+              chat_id: ADMIN,
+              message_id: message.message_id+1,
+              text: message.text,
+              reply_markup: replymarkup24
+            }))).json()
+        }   
+      }else{
+        const id23 = message.reply_to_message.reply_markup.inline_keyboard[0][0].callback_data.split(":")
+        if (filedata) {
+          (await fetch(apiUrl('editMessageMedia', {
+            chat_id: id23[0],
+            message_id: message.message_id+1,
+            media: filedata,
+            reply_markup: replymarkup25
+          }))).json();
+          (await fetch(apiUrl('editMessageCaption', {
+            chat_id: id23[0],
+            message_id: message.message_id+1,
+            caption: message.caption || "",
+            reply_markup: replymarkup25
+          }))).json()
+        }else{
+          const id223 = (await fetch(apiUrl('editMessageText', {
+            chat_id: id23[0],
+            message_id: message.message_id+1,
+            text: message.text,
+            reply_markup: replymarkup25
+          })))
+        }
+      }
   }
   return new Response('Ok')
 }
-async function onMessage (message,db) {
-  const text = message.text || ""
-  if (message.chat.type == "private") {
-    const ban = ((await db.get("ban"))?.trim().split("\n")) || [];
-    if ( message.from.id == ADMIN || !(ban.includes(message.from.id.toString()))) {
-      if (message.from.id == ADMIN) {
-        if (text.split(" ").length ==2 && text.split(" ")[0] == "ban" && !isNaN(text.split(" ")[1]/0)) {
-          const user_id = text.split(" ")[1]
-          if (!(ban.includes(user_id))) {
-            ban.push(user_id);
-            await db.put("ban",ban.join("\n"));
-            (await fetch(apiUrl('sendMessage', {
-              chat_id: parseInt(user_id),
-              text: "شما بن شدید"
-            }))).json()
-          }
-          (await fetch(apiUrl('sendMessage', {
-            chat_id: message.chat.id,
-            text: "بن شد",
-            reply_to_message_id: message.message_id
-          }))).json()
-        }
-        else if (text.split(" ").length ==2 && text.split(" ")[0] == "unban" && !isNaN(text.split(" ")[1]/0)) {
-          const user_id = text.split(" ")[1]
-          if ((ban.includes(user_id))) {
-            const ban2 = ban.filter(elem => elem !== user_id);
-            if (JSON.stringify(ban2, null, 2) != "[]"){
-              await db.put("ban",ban2.join("\n"));
-            }else{
-              await db.delete("ban");
-            }
-            (await fetch(apiUrl('sendMessage', {
-              chat_id: parseInt(user_id),
-              text: "انبن شدید"
-            }))).json()
-            (await fetch(apiUrl('sendMessage', {
-              chat_id: message.chat.id,
-              text: "انبن شد",
-              reply_to_message_id: message.message_id
-            }))).json()
-          }else{
-            (await fetch(apiUrl('sendMessage', {
-              chat_id: message.chat.id,
-              text: "ایدی پیدا نشد",
-              reply_to_message_id: message.message_id
-            }))).json()
-          }
-        }
-        else if (text == "banlist") {
-          if (JSON.stringify(ban, null, 2) != "[]"){
-            (await fetch(apiUrl('sendMessage', {
-              chat_id: message.chat.id,
-              text: "لیست بن شدگان:\n〰️\n<code>"+ban.join("</code>\n〰️\n<code>")+'</code>',
-              parse_mode: "HTML",
-              reply_to_message_id: message.message_id
-            }))).json()
-          }else{
-            (await fetch(apiUrl('sendMessage', {
-              chat_id: message.chat.id,
-              text: "لیست خالی است",
-              reply_to_message_id: message.message_id
-            }))).json()
-          }
-        }
-        else if (text == "cleanbanall") {
-          if (JSON.stringify(ban, null, 2) != "[]"){
-            await db.delete("ban");
-            (await fetch(apiUrl('sendMessage', {
-              chat_id: message.chat.id,
-              text: "لیست خالی شد",
-              reply_to_message_id: message.message_id
-            }))).json()
-          }else{
-            (await fetch(apiUrl('sendMessage', {
-              chat_id: message.chat.id,
-              text: "لیست خالی است",
-              reply_to_message_id: message.message_id
-            }))).json()
-          }
-        }
-      }
-      if (text == "/start") {
-        if (message.from.id == ADMIN) {
-          (await fetch(apiUrl('sendMessage', {
-            chat_id: message.chat.id,
-            text: `
+async function onstart (message,db) {
+  const ban = ((await db.get("ban"))?.trim().split("\n")) || [];
+  if (message.from.id == ADMIN || !(ban.includes(message.from.id.toString()))) {
+    if (message.from.id == ADMIN) {
+      (await fetch(apiUrl('sendMessage', {
+      chat_id: message.chat.id,
+      text: `
 سلام خوش امدید
 
 
@@ -173,17 +233,130 @@ async function onMessage (message,db) {
 ➿〰️〰️〰️〰️〰️〰️〰️➿
 〰️〰️@amir_wolf512〰️〰️
 ➿〰️〰️〰️〰️〰️〰️〰️➿`,
-            reply_to_message_id: message.message_id,
-            parse_mode: "HTML",
-          }))).json()
+      reply_to_message_id: message.message_id,
+      parse_mode: "HTML",
+      }))).json()
+    }else{
+      (await fetch(apiUrl('sendMessage', {
+      chat_id: message.chat.id,
+      text: "پیام خودتون ارسال کنید تا به سازندم برسونم:)",
+      reply_to_message_id: message.message_id
+      }))).json()
+    }
+  }
+}
+async function onadmin (message,db) {
+  const text = message.text || ""
+  const ban = ((await db.get("ban"))?.trim().split("\n")) || [];
+  if (message.from.id == ADMIN) {
+    if (text.split(" ").length ==2 && text.split(" ")[0] == "ban" && !isNaN(text.split(" ")[1]/0)) {
+      const user_id = text.split(" ")[1]
+      if (!(ban.includes(user_id))) {
+        ban.push(user_id);
+        await db.put("ban",ban.join("\n"));
+        (await fetch(apiUrl('sendMessage', {
+          chat_id: parseInt(user_id),
+          text: "شما بن شدید"
+        }))).json()
+      }
+      (await fetch(apiUrl('sendMessage', {
+        chat_id: message.chat.id,
+        text: "بن شد",
+        reply_to_message_id: message.message_id
+      }))).json()
+    }
+    else if (text.split(" ").length ==2 && text.split(" ")[0] == "unban" && !isNaN(text.split(" ")[1]/0)) {
+      const user_id = text.split(" ")[1]
+      if ((ban.includes(user_id))) {
+        const ban2 = ban.filter(elem => elem !== user_id);
+        if (JSON.stringify(ban2, null, 2) != "[]"){
+          await db.put("ban",ban2.join("\n"));
         }else{
-          (await fetch(apiUrl('sendMessage', {
-            chat_id: message.chat.id,
-            text: "پیام خودتون ارسال کنید تا به سازندم برسونم:)",
-            reply_to_message_id: message.message_id
-          }))).json()
+          await db.delete("ban");
         }
+        (await fetch(apiUrl('sendMessage', {
+          chat_id: parseInt(user_id),
+          text: "انبن شدید"
+        }))).json();
+        (await fetch(apiUrl('sendMessage', {
+          chat_id: message.chat.id,
+          text: "انبن شد",
+          reply_to_message_id: message.message_id
+        }))).json()
       }else{
+        (await fetch(apiUrl('sendMessage', {
+          chat_id: message.chat.id,
+          text: "ایدی پیدا نشد",
+          reply_to_message_id: message.message_id
+        }))).json()
+      }
+    }
+    else if (text == "banlist") {
+      if (JSON.stringify(ban, null, 2) != "[]"){
+        (await fetch(apiUrl('sendMessage', {
+          chat_id: message.chat.id,
+          text: "لیست بن شدگان:\n〰️\n<code>"+ban.join("</code>\n〰️\n<code>")+'</code>',
+          parse_mode: "HTML",
+          reply_to_message_id: message.message_id
+        }))).json()
+      }else{
+        (await fetch(apiUrl('sendMessage', {
+          chat_id: message.chat.id,
+          text: "لیست خالی است",
+          reply_to_message_id: message.message_id
+        }))).json()
+      }
+    }
+    else if (text == "cleanbanall") {
+      if (JSON.stringify(ban, null, 2) != "[]"){
+        await db.delete("ban");
+        (await fetch(apiUrl('sendMessage', {
+          chat_id: message.chat.id,
+          text: "لیست خالی شد",
+          reply_to_message_id: message.message_id
+        }))).json()
+      }else{
+        (await fetch(apiUrl('sendMessage', {
+          chat_id: message.chat.id,
+          text: "لیست خالی است",
+          reply_to_message_id: message.message_id
+        }))).json()
+      }
+    }
+  }
+}
+async function onCallbackQuery (callback,db) {
+  if (callback.data == "ban"){
+    const ban = (await db.get("ban"))?.trim().split("\n") || [];
+    const user_id = callback.message.reply_markup.inline_keyboard[0][0].callback_data.split(":")[0].toString()
+    if (!(ban.includes(user_id))) {
+      ban.push(user_id);
+      await db.put("ban",ban.join("\n"));
+      (await fetch(apiUrl('sendMessage', {
+        chat_id: parseInt(user_id),
+        text: "شما بن شدید"
+      }))).json()
+    }
+    (await fetch(apiUrl('sendMessage', {
+      chat_id: callback.message.chat.id,
+      text: "بن شد",
+      reply_to_message_id: callback.message.message_id
+    }))).json();
+    (await fetch(apiUrl('deleteMessage', {
+      chat_id: callback.message.chat.id,
+      message_id: callback.message.message_id
+    }))).json()
+  }else{
+    (await fetch(apiUrl('answerCallbackQuery', {
+      callback_query_id: callback.id,
+      text:"@amir_wolf512",
+    }))).json()
+  }
+  return new Response('Ok')
+}
+async function onMessage (message,db) {
+    const ban = ((await db.get("ban"))?.trim().split("\n")) || [];
+    if ( message.from.id == ADMIN || !(ban.includes(message.from.id.toString()))) {
         if (message.from.id != ADMIN) {
           const replymarkup23 = JSON.stringify({
             inline_keyboard:
@@ -304,15 +477,14 @@ async function onMessage (message,db) {
           }
         }
       }
-    }else{
+    /*else{
       (await fetch(apiUrl('sendMessage', {
         chat_id: message.chat.id,
         text: "شما بن شدید",
         reply_to_message_id: message.message_id
       }))).json()
-    }
-  }
-  return new Response('Ok')
+    }*/
+    return new Response('Ok')
 }
 
 async function registerWebhook (event, requestUrl, suffix, secret) {
