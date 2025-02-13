@@ -1,5 +1,6 @@
 /**
  * https://github.com/amirwolf5122/telegram-bot-cloudflare
+ * t.me/amir_wolf512
 */
 
 const TOKEN = '***'// Get it from @BotFather https://core.telegram.org/bots#6-botfather
