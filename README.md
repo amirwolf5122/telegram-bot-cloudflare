@@ -17,9 +17,9 @@ Run Telegram messaging bot on Cloudflare Worker.
 
 ## @Setup-اموزش نصب:
 
-https://youtu.be/WYbEuzlFNkw
+https://youtu.be/lZ5Cmp3cMV4
 
-[![Watch the video](https://img.youtube.com/vi/bZAdEJMiYag/0.jpg)](https://youtu.be/WYbEuzlFNkw)
+[![Watch the video](https://img.youtube.com/vi/lZ5Cmp3cMV4/0.jpg)](https://youtu.be/lZ5Cmp3cMV4)
 
 @Link-لینک:
 #
