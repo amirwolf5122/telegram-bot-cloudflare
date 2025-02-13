@@ -29,4 +29,4 @@ https://youtu.be/WYbEuzlFNkw
 
 [chatIDrobot](https://t.me/chatIDrobot)
 
-[BotFather](https://t.me/@BotFather)
+[BotFather](https://t.me/BotFather)
