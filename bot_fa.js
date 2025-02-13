@@ -8,9 +8,9 @@ addEventListener('fetch', event => {
   const url = new URL(event.request.url)
   if (url.pathname === '/endpoint') {
     event.respondWith(handleWebhook(event,database))
-  } else if (url.pathname === '/registerWebhook') {
+  } else if (url.pathname === '/registerWebhook' || url.pathname === '/set') {
     event.respondWith(registerWebhook(event, url, '/endpoint', 'QUEVEDO_BZRP_Music_Sessions_522'))
-  } else if (url.pathname === '/unRegisterWebhook') {
+  } else if (url.pathname === '/unRegisterWebhook'|| url.pathname === '/unset') {
     event.respondWith(unRegisterWebhook(event))
   } else {
     event.respondWith(new Response('No handler for this request'))
