@@ -33,12 +33,11 @@ async function onUpdate (update,db) {
     await onCallbackQuery(update.callback_query,db)
   }
   else if ('message' in update) {
-    const parts = update.message.text.split(" ");
     if (update.message.chat.type == "private") {
       if (update.message.text && update.message.text == "/start"){
         await onstart(update.message,db)
       }
-      else if (parts.length === 2 && ["ban", "unban"].includes(parts[0]) && !isNaN(parts[1]) || update.message.text && ( update.message.text == "banlist" || update.message.text == "cleanbanall")){
+      else if (update.message.text && update.message.text.split(" ").length === 2 && ["ban", "unban"].includes(update.message.text.split(" ")[0]) && !isNaN(update.message.text.split(" ")[1]) || update.message.text && ( update.message.text == "banlist" || update.message.text == "cleanbanall")){
         await onadmin(update.message,db)
       }else{
         await onMessage(update.message,db)
@@ -126,80 +125,142 @@ async function onMessageedit (message,db) {
           ]
         ]
         })
-    const filedata=null
-    if (message.photo){
-      const filedata= JSON.stringify({
-        'type': 'photo',
-        'media': message.photo.file_id
-    })
-    }else if (message.video){
-      const filedata= JSON.stringify({
-        'type': 'video',
-        'media': message.video.file_id
-    })
-    }else if (message.document){
-      const filedata= JSON.stringify({
-        'type': 'document',
-        'media': message.document.file_id
-    })
-    }else if (message.audio){
-      const filedata= JSON.stringify({
-        'type': 'audio',
-        'media': message.audio.file_id
-    })
-    }else if (message.sticker){
-      const filedata= JSON.stringify({
-        'type': 'sticker',
-        'media': message.sticker.file_id
-    })
-    }else if (message.voice){
-      const filedata= JSON.stringify({
-        'type': 'voice',
-        'media': message.voice.file_id
-    })
+    let filedata = ""; // تعریف متغیر در خارج از بلوک‌ها
+    if (message.photo) {
+      if (Array.isArray(message.photo)) {
+            filedata = JSON.stringify({
+                type: 'photo',
+                media: message.photo[message.photo.length - 1].file_id
+            });
+      }else{
+        filedata = JSON.stringify({
+          type: 'photo',
+          media: message.photo.file_id
+      });
+      }
+    } else if (message.animation) {
+      if (Array.isArray(message.animation)) {
+        filedata = JSON.stringify({
+            type: 'animation',
+            media: message.animation[message.animation.length - 1].file_id
+        });
+      }else{
+        filedata = JSON.stringify({
+        type: 'animation',
+        media: message.animation.file_id
+        });
+      }
+    } else if (message.video) {
+      if (Array.isArray(message.video)) {
+        filedata = JSON.stringify({
+            type: 'video',
+            media: message.video[message.video.length - 1].file_id
+        });
+      }else{
+        filedata = JSON.stringify({
+        type: 'video',
+        media: message.video.file_id
+        });
+      }
+    } else if (message.document) {
+      if (Array.isArray(message.document)) {
+        filedata = JSON.stringify({
+            type: 'document',
+            media: message.document[message.document.length - 1].file_id
+        });
+      }else{
+        filedata = JSON.stringify({
+        type: 'document',
+        media: message.document.file_id
+        });
+      }
+    } else if (message.audio) {
+      if (Array.isArray(message.audio)) {
+        filedata = JSON.stringify({
+            type: 'audio',
+            media: message.audio[message.audio.length - 1].file_id
+        });
+      }else{
+        filedata = JSON.stringify({
+        type: 'audio',
+        media: message.audio.file_id
+        });
+      }
+    } else if (message.sticker) {
+      if (Array.isArray(message.sticker)) {
+        filedata = JSON.stringify({
+            type: 'sticker',
+            media: message.sticker[message.sticker.length - 1].file_id
+        });
+      }else{
+        filedata = JSON.stringify({
+        type: 'sticker',
+        media: message.sticker.file_id
+        });
+      }
+    } else if (message.voice) {
+      if (Array.isArray(message.voice)) {
+        filedata = JSON.stringify({
+            type: 'voice',
+            media: message.voice[message.voice.length - 1].file_id
+        });
+      }else{
+        filedata = JSON.stringify({
+        type: 'voice',
+        media: message.voice.file_id
+        });
+      }
     }
     if (message.from.id != ADMIN) {
         if (filedata) {
-          (await fetch(apiUrl('editMessageMedia', {
+          try {
+            (await fetch(apiUrl('editMessageMedia', {
             chat_id: ADMIN,
             message_id: message.message_id+1,
             media: filedata,
             reply_markup: replymarkup24
-          }))).json();
-          (await fetch(apiUrl('editMessageCaption', {
+            }))).json();
+          } catch (error) {}
+          try {
+            (await fetch(apiUrl('editMessageCaption', {
             chat_id: ADMIN,
             message_id: message.message_id+1,
             caption: message.caption || "",
             reply_markup: replymarkup24
-          }))).json()
+            }))).json()
+          } catch (error) {}
         }else{
           (await fetch(apiUrl('editMessageText', {
               chat_id: ADMIN,
               message_id: message.message_id+1,
-              text: message.text,
+              text: message.text || message.caption || "",
               reply_markup: replymarkup24
             }))).json()
         }   
       }else{
         const id23 = message.reply_to_message.reply_markup.inline_keyboard[0][0].callback_data.split(":")
         if (filedata) {
-          (await fetch(apiUrl('editMessageMedia', {
+          try {
+            (await fetch(apiUrl('editMessageMedia', {
             chat_id: id23[0],
             message_id: message.message_id+1,
             media: filedata,
             reply_markup: replymarkup25
-          }))).json();
-          (await fetch(apiUrl('editMessageCaption', {
+            }))).json();
+          } catch (error) {}
+          try {
+            (await fetch(apiUrl('editMessageCaption', {
             chat_id: id23[0],
             message_id: message.message_id+1,
-            caption: message.caption || "",
+            caption: message.text || message.caption || "",
             reply_markup: replymarkup25
-          }))).json()
+            }))).json()
+          } catch (error) {}
         }else{
           const id223 = (await fetch(apiUrl('editMessageText', {
             chat_id: id23[0],
             message_id: message.message_id+1,
-            text: message.text,
+            text: message.text || message.caption || "",
             reply_markup: replymarkup25
           })))
         }
