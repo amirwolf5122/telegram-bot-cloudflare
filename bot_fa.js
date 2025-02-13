@@ -125,7 +125,7 @@ async function onMessageedit (message,db) {
           ]
         ]
         })
-    let filedata = ""; // تعریف متغیر در خارج از بلوک‌ها
+    let filedata = "";
     if (message.photo) {
       if (Array.isArray(message.photo)) {
             filedata = JSON.stringify({
