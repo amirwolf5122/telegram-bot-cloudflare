@@ -1,6 +1,7 @@
 /**
  * https://github.com/amirwolf5122/telegram-bot-cloudflare
 */
+
 const TOKEN = '***'// Get it from @BotFather https://core.telegram.org/bots#6-botfather
 const ADMIN = 5831914878 //// Get it from @chatIDrobot
 addEventListener('fetch', event => {
